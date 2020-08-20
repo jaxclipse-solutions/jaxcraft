@@ -1,19 +1,163 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <map>
   <room>
-    <name>BedRoom</name>
-    <description>You wake up. It's early morning and you're hungry</description>
+    <name>OutsideEntryway</name>
+    <description>You are standing outside a door in a hallway.</description>
+    <border>
+      <direction>west</direction>
+      <name>Entryway</name>
+    </border>
+  </room>
+  <room>
+    <name>Entryway</name>
+    <description>The entryway is bright and pleasant.  The floor is tile.  There is a closet ahead and to the left a bookshelf.</description>
+    <border>
+      <direction>west</direction>
+      <name>Kitchen</name>
+    </border>
     <border>
       <direction>east</direction>
+      <name>OutsideEntryway</name>
+    </border>
+	<border>
+      <direction>south</direction>
+      <name>DiningRoom</name>
+    </border>
+  </room>
+  <room>
+    <name>Kitchen</name>
+    <description>The kitchen is clean and bright.  There is a stove, a sink, a refridgerator, and a pantry.</description>
+    <border>
+      <direction>north</direction>
+      <name>Laundry</name>
+    </border>
+    <border>
+      <direction>east</direction>
+      <name>Entryway</name>
+    </border>
+  </room>
+  <room>
+    <name>Laundry</name>
+    <description>The laundry room is quiet.  There is a hamper, a clothes washer, and a clothes dryer.</description>
+    <border>
+      <direction>north</direction>
+      <name>Garage</name>
+    </border>
+    <border>
+      <direction>south</direction>
+      <name>Kitchen</name>
+    </border>
+  </room>
+  <room>
+    <name>Garage</name>
+    <description>The garage is packed with stuff all along the walls.</description>
+    <border>
+      <direction>north</direction>
+      <name>OutsideGarage</name>
+    </border>
+    <border>
+      <direction>south</direction>
+      <name>Laundry</name>
+    </border>
+  </room>
+  <room>
+    <name>OutsideGarage</name>
+    <description>You are standing outside the garage.  There is a keypad on the wall.</description>
+    <border>
+      <direction>south</direction>
+      <name>Garage</name>
+    </border>
+  </room>
+  <room>
+    <name>DiningRoom</name>
+    <description>The dining room has a painting on one wall, a table with places for four people, and a large bookcase.</description>
+    <border>
+      <direction>north</direction>
+      <name>Entryway</name>
+    </border>
+    <border>
+      <direction>south</direction>
       <name>LivingRoom</name>
-     </border>
+    </border>
+    <border>
+      <direction>east</direction>
+      <name>Hallway</name>
+    </border>
   </room>
   <room>
     <name>LivingRoom</name>
-    <description>You walk into the living room</description>
-     <border>
+    <description>The living room has a couch, chairs, a coffee table, and media center with a TV.</description>
+    <border>
+      <direction>north</direction>
+      <name>DiningRoom</name>
+    </border>
+    <border>
       <direction>west</direction>
-      <name>BedRoom</name>
-     </border>
+      <name>MasterBedroom</name>
+    </border>
+  </room>
+  <room>
+    <name>MasterBedroom</name>
+    <description>The master bedroom has a bookcase, a bed, a closet, a bookshelf, a dresser, and a computer desk.</description>
+    <border>
+      <direction>east</direction>
+      <name>LivingRoom</name>
+    </border>
+    <border>
+      <direction>north</direction>
+      <name>MasterBathroom</name>
+    </border>
+  </room>
+  <room>
+    <name>MasterBathroom</name>
+    <description>The master bathroom is clean.  It has a toilet, sink, shower, and garbage can.</description>
+    <border>
+      <direction>south</direction>
+      <name>MasterBedroom</name>
+    </border>
+  </room>
+  <room>
+    <name>Hallway</name>
+    <description>The hallway is mostly empty except for a rug and doorways.</description>
+    <border>
+      <direction>north</direction>
+      <name>Bedroom1</name>
+    </border>
+    <border>
+      <direction>south</direction>
+      <name>Bedroom2</name>
+    </border>
+    <border>
+      <direction>east</direction>
+      <name>Bathroom</name>
+    </border>
+    <border>
+      <direction>west</direction>
+      <name>DiningRoom</name>
+    </border>
+  </room>
+  <room>
+    <name>Bedroom1</name>
+    <description>This bed room has a closet, a bed, a dresser, and a computer desk.</description>
+    <border>
+      <direction>south</direction>
+      <name>Hallway</name>
+    </border>
+  </room>
+  <room>
+    <name>Bedroom2</name>
+    <description>This bed room has a closet, a bed, a dresser, and a computer desk.</description>
+    <border>
+      <direction>north</direction>
+      <name>Hallway</name>
+    </border>
+  </room>
+  <room>
+    <name>Bathroom</name>
+    <description>The bathroom is clean.  It has a toilet, sink, tub with a shower, and garbage can.</description>
+    <border>
+      <direction>west</direction>
+      <name>Hallway</name>
+    </border>
   </room>
 </map>
