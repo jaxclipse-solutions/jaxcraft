@@ -6,7 +6,9 @@ if you've got all three ready you can try out with the following:
 
 
 $git clone https://github.com/jaxclipse-solutions/jaxcraft.git''
+
 $cd jaxcract''
+
 $mvn clean package exec:java''
 
 ====================================================================
