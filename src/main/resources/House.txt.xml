@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<map>
+  <room>
+    <name>BedRoom</name>
+    <description>You wake up. It's early morning and you're hungry</description>
+    <border>
+      <direction>east</direction>
+      <name>LivingRoom</name>
+     </border>
+  </room>
+  <room>
+    <name>LivingRoom</name>
+    <description>You walk into the living room</description>
+     <border>
+      <direction>west</direction>
+      <name>BedRoom</name>
+     </border>
+  </room>
+</map>
