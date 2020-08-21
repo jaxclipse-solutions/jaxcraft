@@ -9,7 +9,7 @@ $git clone https://github.com/jaxclipse-solutions/jaxcraft.git''
 
 $cd jaxcract''
 
-$mvn clean package exec:java''
+$mvn clean package exec:java
 
 ====================================================================
 
