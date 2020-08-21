@@ -5,9 +5,9 @@ to try out jaxcraft you need a command line, a brain, and an attention span.
 if you've got all three ready you can try out with the following:
 
 
-$git clone https://github.com/jaxclipse-solutions/jaxcraft.git''
+$git clone https://github.com/jaxclipse-solutions/jaxcraft.git
 
-$cd jaxcract''
+$cd jaxcract
 
 $mvn clean package exec:java
 
