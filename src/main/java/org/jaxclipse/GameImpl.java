@@ -1,23 +1,24 @@
 package org.jaxclipse;
 
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import org.apache.commons.lang.NullArgumentException;
 import org.jaxclipse.base.AbstractGame;
 import org.jaxclipse.base.Game;
 import org.jaxclipse.core.InventoryContainer;
-import org.jaxclipse.core.OutStream;
 import org.jaxclipse.core.model.GameInitModel;
 import org.jaxclipse.inject.CommandProvider;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 @Singleton
 public class GameImpl extends AbstractGame implements Game {
 
   @Inject
-  public GameImpl(InputHandler parser, CommandProvider commandProvider,
-      InventoryContainer inventory, OutStream outStream) {
-    super(parser, commandProvider, inventory, outStream);
+	public GameImpl(ConsoleWrapper consoleWrapper, CommandProvider commandProvider,
+			InventoryContainer inventory)
+	{
+		super(consoleWrapper, commandProvider, inventory);
   }
 
   @Override

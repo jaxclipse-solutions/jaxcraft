@@ -1,15 +1,8 @@
 package org.jaxclipse.base;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.jaxclipse.InputHandler;
+import org.jaxclipse.ConsoleWrapper;
 import org.jaxclipse.core.ActionParserHelper;
 import org.jaxclipse.core.InventoryContainer;
-import org.jaxclipse.core.OutStream;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.command.AbstractCommand;
 import org.jaxclipse.core.command.AttackCommand;
@@ -38,6 +31,12 @@ import org.jaxclipse.core.model.core.HasStatus;
 import org.jaxclipse.core.model.core.ItemContainer;
 import org.jaxclipse.inject.CommandProvider;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public abstract class AbstractGame implements Game {
 
 	private List<RoomModel> rooms;
@@ -51,21 +50,20 @@ public abstract class AbstractGame implements Game {
 
 	private final InventoryContainer inventory;
 
-	private final InputHandler inputHandler;
+	private final ConsoleWrapper consoleWrapper;
 	private final CommandProvider commandProvider;
-	private final OutStream outStream;
 
-	public AbstractGame(InputHandler inputHandler,
-			CommandProvider commandProvider, InventoryContainer inventory,
-			OutStream outStream) {
+	public AbstractGame(ConsoleWrapper consoleWrapper,
+			CommandProvider commandProvider, InventoryContainer inventory)
+	{
 		rooms = new ArrayList<>();
 		executors = new ArrayList<>();
 		triggers = new ArrayList<>();
 		itemContainers = new HashMap<>();
 		this.inventory = inventory;
-		this.inputHandler = inputHandler;
+		this.consoleWrapper = consoleWrapper;
 		this.commandProvider = commandProvider;
-		this.outStream = outStream;
+
 	}
 
 	public void init(GameInitModel gameInitModel) {
@@ -85,7 +83,7 @@ public abstract class AbstractGame implements Game {
 
 	public void play() {
 		printCurrentRoom();
-		inputHandler.start();
+		consoleWrapper.start();
 	}
 
 	private void addCommands() {
@@ -307,9 +305,9 @@ public abstract class AbstractGame implements Game {
 
 	public boolean exitGame() {
 		try {
-			inputHandler.checkAccess();
-			inputHandler.interrupt();
-			if (inputHandler.isInterrupted()) {
+			consoleWrapper.checkAccess();
+			consoleWrapper.interrupt();
+			if (consoleWrapper.isInterrupted()) {
 				print(BYE_WORD);
 				System.exit(SUCCESS_EXIT_STATUS);
 			} else {
@@ -493,11 +491,11 @@ public abstract class AbstractGame implements Game {
 	}
 
 	private void print(Collection<String> messages) {
-		outStream.print(messages.toArray(new String[] {}));
+		consoleWrapper.consolePrint(messages.toArray(new String[] {}));
 	}
 
 	protected void print(String... messages) {
-		outStream.print(messages);
+		consoleWrapper.consolePrint(messages);
 	}
 
 }

@@ -1,74 +1,114 @@
 package org.jaxclipse;
 
+import com.google.inject.Inject;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import jline.ArgumentCompletor;
-import jline.ConsoleReader;
-import jline.SimpleCompletor;
-
+import org.beryx.textio.TerminalProperties;
+import org.beryx.textio.TextIO;
+import org.beryx.textio.TextIoFactory;
+import org.beryx.textio.TextTerminal;
 import org.jaxclipse.base.Game;
-import org.jaxclipse.core.OutStream;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.UserCommandParser;
 import org.jaxclipse.core.command.AbstractCommand;
 
-import com.google.inject.Inject;
+import java.util.Collection;
 
-public class InputHandler extends Thread {
+public class ConsoleWrapper extends Thread
+{
 
 	private final Game game;
-	private final OutStream outStream;
-	private final ConsoleReader reader;
+	private final TextIO textIO;
 
 	@Inject
-	public InputHandler(Game game, OutStream outStream, ConsoleReader reader) {
+	public ConsoleWrapper(Game game)
+	{
 		this.game = game;
-		this.outStream = outStream;
-		this.reader = reader;
+		// This needs to be handled by CDI...
+		// SystemTextTerminal sysTerminal = new SystemTextTerminal();
+
+		TextTerminal textTerminal = TextIoFactory.getTextTerminal();
+		this.textIO = new TextIO(textTerminal);
+		
+		
+		//@formatter:off
+		/*
+		 * 
+		 * 		
+		 * SystemTextTerminal sysTerminal = new SystemTextTerminal();
+		 * TextIO sysTextIO = new TextIO(sysTerminal);
+		 * printBanner(sysTextIO);
+		 * 
+		 * 
+		 * 
+		 */
+		//@formatter:on
+
 	}
 
 	@Override
-	public void run() {
+	public void run()
+	{
 		String line = null;
-		List<Object> completors = new LinkedList<Object>();
-		List<String> allCommands = new ArrayList<>();
 
-		try {
-			reader.setBellEnabled(false);
-			for (AbstractCommand executor : game.getCommandExecutors()) {
-				allCommands.addAll(executor.getCommands());
-			}
-			completors.add(new SimpleCompletor(allCommands
-					.toArray(new String[] {})));
-			reader.addCompletor(new ArgumentCompletor(completors));
+		try
+		{
+			TextTerminal<?> terminal = textIO.getTextTerminal();
+			TerminalProperties<?> props = terminal.getProperties();
 
-			while ((line = reader.readLine("\n>")) != null) {
-				if (!handleInput(line)) {
-					outStream.print(Game.ERROR_MESSAGE);
+			props.setPromptBold(true);
+			// props.setPromptUnderline(true);
+			props.setPromptColor("blue");
+			while (true) // ummm ?
+			{
+				// TODO: argument tab/auto completion with textIO...?
+				line = textIO.newStringInputReader().read("jaxcraft_> ");
+				if (!handleInput(line))
+				{
+					consolePrint(Game.ERROR_MESSAGE);
 				}
+
 			}
-		} catch (Exception ex) {
-			outStream.print(Game.ERROR_MESSAGE + ex.toString());
-		} finally {
+
+		}
+		catch (Exception ex)
+		{
+			consolePrint(Game.ERROR_MESSAGE + ex.toString());
+		}
+		finally
+		{
 			System.exit(1);
 		}
 	}
 
-	protected boolean handleInput(String line) {
+	protected boolean handleInput(String line)
+	{
 		boolean handled = false;
 		UserCommand command = UserCommandParser.resolve(line);
-		if (command != null) {
-			for (AbstractCommand executor : game.getCommandExecutors()) {
-				if (executor.getCommands().contains(command.getCommand())) {
-					outStream.print();
+		if (command != null)
+		{
+			for (AbstractCommand executor : game.getCommandExecutors())
+			{
+				if (executor.getCommands().contains(command.getCommand()))
+				{
+					consolePrint();
 					handled = game.processCommand(command);
 					break;
 				}
 			}
 		}
 		return handled;
+	}
+
+	public void consolePrint(Collection<String> messages)
+	{
+		consolePrint(messages.toArray(new String[] {}));
+	}
+
+	public void consolePrint(String... messages)
+	{
+		for (String s : messages)
+		{
+			textIO.getTextTerminal().println(s);
+		}
 	}
 }
