@@ -6,6 +6,9 @@ import org.beryx.textio.TerminalProperties;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 import org.beryx.textio.TextTerminal;
+import org.beryx.textio.demo.WebTextIoExecutor;
+import org.beryx.textio.web.TextIoApp;
+import org.beryx.textio.web.WebTextTerminal;
 import org.jaxclipse.base.Game;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.UserCommandParser;
@@ -13,14 +16,14 @@ import org.jaxclipse.core.command.AbstractCommand;
 
 import java.util.Collection;
 
-public class ConsoleWrapper extends Thread
+public class REPLThread extends Thread
 {
 
 	private final Game game;
 	private final TextIO textIO;
 
 	@Inject
-	public ConsoleWrapper(Game game)
+	public REPLThread(Game game)
 	{
 		this.game = game;
 		// This needs to be handled by CDI...
@@ -42,7 +45,22 @@ public class ConsoleWrapper extends Thread
 		 * 
 		 */
 		//@formatter:on
+		WebTextTerminal webTextTerminal = new WebTextTerminal();
+		webTextTerminal.init();
+		TextIO webTextIO = new TextIO(webTextTerminal);
 
+		WebTextTerminal webTextTerm = (WebTextTerminal) webTextIO.getTextTerminal();
+
+		TextIoApp<?> textIoApp = createTextIoApp(webTextIO, app, webTextTerm);
+		WebTextIoExecutor webTextIoExecutor = new WebTextIoExecutor();
+		configurePort(textIO, webTextIoExecutor, 8080);
+		webTextIoExecutor.execute(textIoApp);
+	}
+
+	private static void configurePort(TextIO textIO, WebTextIoExecutor webTextIoExecutor, int defaultPort)
+	{
+		int port = textIO.newIntInputReader().withDefaultValue(defaultPort).read("Server port number");
+		webTextIoExecutor.withPort(port);
 	}
 
 	@Override
@@ -80,6 +98,9 @@ public class ConsoleWrapper extends Thread
 		}
 	}
 
+	// TODO - This violates single purpose for ConsoleWrapper
+	// we don't need to keep reference to game just to
+	// have handleInput here called from the game... sigh.
 	protected boolean handleInput(String line)
 	{
 		boolean handled = false;

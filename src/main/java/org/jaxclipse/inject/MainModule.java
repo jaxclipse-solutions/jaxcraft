@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 
 import org.jaxclipse.GameExecutor;
 import org.jaxclipse.GameImpl;
-import org.jaxclipse.ConsoleWrapper;
+import org.jaxclipse.REPLThread;
 import org.jaxclipse.base.Game;
 import org.jaxclipse.core.GameFileParserImpl;
 import org.jaxclipse.core.InventoryContainer;
@@ -22,7 +22,7 @@ public class MainModule extends AbstractModule {
 				Singleton.class);
 		bind(GameExecutor.class).in(Singleton.class);
 		bind(NavigationCommand.class);
-		bind(ConsoleWrapper.class).in(Singleton.class);
+		bind(REPLThread.class).in(Singleton.class);
 
 	}
 }

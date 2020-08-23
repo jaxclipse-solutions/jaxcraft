@@ -15,7 +15,7 @@ import org.jaxclipse.inject.CommandProvider;
 public class GameImpl extends AbstractGame implements Game {
 
   @Inject
-	public GameImpl(ConsoleWrapper consoleWrapper, CommandProvider commandProvider,
+	public GameImpl(REPLThread consoleWrapper, CommandProvider commandProvider,
 			InventoryContainer inventory)
 	{
 		super(consoleWrapper, commandProvider, inventory);

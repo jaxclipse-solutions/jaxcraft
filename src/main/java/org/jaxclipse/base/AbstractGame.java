@@ -1,6 +1,6 @@
 package org.jaxclipse.base;
 
-import org.jaxclipse.ConsoleWrapper;
+import org.jaxclipse.REPLThread;
 import org.jaxclipse.core.ActionParserHelper;
 import org.jaxclipse.core.InventoryContainer;
 import org.jaxclipse.core.UserCommand;
@@ -50,10 +50,10 @@ public abstract class AbstractGame implements Game {
 
 	private final InventoryContainer inventory;
 
-	private final ConsoleWrapper consoleWrapper;
+	private final REPLThread consoleWrapper;
 	private final CommandProvider commandProvider;
 
-	public AbstractGame(ConsoleWrapper consoleWrapper,
+	public AbstractGame(REPLThread consoleWrapper,
 			CommandProvider commandProvider, InventoryContainer inventory)
 	{
 		rooms = new ArrayList<>();
