@@ -2,6 +2,7 @@ package org.jaxclipse.base;
 
 import java.util.List;
 
+import org.jaxclipse.REPLThread;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.command.AbstractCommand;
 import org.jaxclipse.core.model.DirectionType;
@@ -110,4 +111,6 @@ public interface Game {
 	boolean attackCreatureWithItem(String creatureName, String itemName);
 
 	boolean exitGame();
+
+	void setREPLThread(REPLThread replThread);
 }

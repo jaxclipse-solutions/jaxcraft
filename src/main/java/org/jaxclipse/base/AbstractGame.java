@@ -37,7 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractGame implements Game {
+public abstract class AbstractGame implements Game
+{
 
 	private List<RoomModel> rooms;
 	private List<ItemModel> items;
@@ -50,23 +51,22 @@ public abstract class AbstractGame implements Game {
 
 	private final InventoryContainer inventory;
 
-	private final REPLThread consoleWrapper;
+	private REPLThread replThread;
 	private final CommandProvider commandProvider;
 
-	public AbstractGame(REPLThread consoleWrapper,
-			CommandProvider commandProvider, InventoryContainer inventory)
+	public AbstractGame(CommandProvider commandProvider, InventoryContainer inventory)
 	{
 		rooms = new ArrayList<>();
 		executors = new ArrayList<>();
 		triggers = new ArrayList<>();
 		itemContainers = new HashMap<>();
 		this.inventory = inventory;
-		this.consoleWrapper = consoleWrapper;
 		this.commandProvider = commandProvider;
 
 	}
 
-	public void init(GameInitModel gameInitModel) {
+	public void init(GameInitModel gameInitModel)
+	{
 		addCommands();
 
 		rooms = gameInitModel.getRooms();
@@ -81,12 +81,14 @@ public abstract class AbstractGame implements Game {
 		itemContainers.putAll(gameInitModel.getItemContainers());
 	}
 
-	public void play() {
+	public void play()
+	{
 		printCurrentRoom();
-		consoleWrapper.start();
+		replThread.setShowPrompt(true);
 	}
 
-	private void addCommands() {
+	private void addCommands()
+	{
 		executors.add(commandProvider.get(NavigationCommand.class));
 		executors.add(commandProvider.get(InventoryCommand.class));
 		executors.add(commandProvider.get(TakeCommand.class));
@@ -98,32 +100,43 @@ public abstract class AbstractGame implements Game {
 		executors.add(commandProvider.get(ExitCommand.class));
 	}
 
-	private void initTriggers(GameInitModel model) {
-		for (CreatureModel creatureModel : model.getCreatures()) {
+	private void initTriggers(GameInitModel model)
+	{
+		for (CreatureModel creatureModel : model.getCreatures())
+		{
 			triggers.add(creatureModel.getTrigger());
 		}
 
-		for (RoomModel room : model.getRooms()) {
-			for (TriggerModel trigger : room.getTriggers()) {
-				if (trigger != null && !triggers.contains(trigger)) {
+		for (RoomModel room : model.getRooms())
+		{
+			for (TriggerModel trigger : room.getTriggers())
+			{
+				if (trigger != null && !triggers.contains(trigger))
+				{
 					triggers.add(trigger);
 				}
 			}
 		}
 	}
 
-	public boolean processCommand(UserCommand userCommand) {
+	public boolean processCommand(UserCommand userCommand)
+	{
 		List<TriggerModel> triggers = currentRoom.getTriggers();
-		for (TriggerModel trigger : triggers) {
-			if (trigger.getCommand().equals(userCommand.getCommand())) {
-				if (processTrigger(trigger)) {
+		for (TriggerModel trigger : triggers)
+		{
+			if (trigger.getCommand().equals(userCommand.getCommand()))
+			{
+				if (processTrigger(trigger))
+				{
 					return true;
 				}
 			}
 		}
 
-		for (AbstractCommand executor : executors) {
-			if (executor.getCommands().contains(userCommand.getCommand())) {
+		for (AbstractCommand executor : executors)
+		{
+			if (executor.getCommands().contains(userCommand.getCommand()))
+			{
 				return executor.execute(userCommand);
 			}
 		}
@@ -132,26 +145,33 @@ public abstract class AbstractGame implements Game {
 		return false;
 	}
 
-	protected boolean processTrigger(TriggerModel trigger) {
+	protected boolean processTrigger(TriggerModel trigger)
+	{
 		ConditionModel condition = trigger.getCondition();
 		String objectName = condition.getObject();
 		String ownerName = condition.getOwner();
-		if (ownerName != null) {
+		if (ownerName != null)
+		{
 			ItemContainer owner = getItemContainerByName(ownerName);
-			if (owner == null) {
-				throw new RuntimeException("owner cannot be null (" + ownerName
-						+ ")");
+			if (owner == null)
+			{
+				throw new RuntimeException("owner cannot be null (" + ownerName + ")");
 			}
 			boolean has = owner.contains(objectName);
-			if (has == condition.isHas()) {
+			if (has == condition.isHas())
+			{
 				executeActionIfExists(trigger.getAction());
 				print(trigger.getMessages());
 				return true;
 			}
-		} else {
+		}
+		else
+		{
 			ItemContainer obj = getItemContainerByName(objectName);
-			if (obj != null) {
-				if (obj.getStatus().equals(condition.getStatus())) {
+			if (obj != null)
+			{
+				if (obj.getStatus().equals(condition.getStatus()))
+				{
 					print(trigger.getMessages());
 					return true;
 				}
@@ -160,11 +180,15 @@ public abstract class AbstractGame implements Game {
 		return false;
 	}
 
-	private void checkItemTriggers(ItemModel item) {
-		for (int i = 0; i < triggers.size(); i++) {
+	private void checkItemTriggers(ItemModel item)
+	{
+		for (int i = 0; i < triggers.size(); i++)
+		{
 			TriggerModel trigger = triggers.get(i);
-			if (isConditionHappened(trigger.getCondition(), item)) {
-				if (trigger.getType().equals(TriggerType.SINGLE)) {
+			if (isConditionHappened(trigger.getCondition(), item))
+			{
+				if (trigger.getType().equals(TriggerType.SINGLE))
+				{
 					triggers.remove(i);
 				}
 				print(trigger.getMessages());
@@ -172,56 +196,69 @@ public abstract class AbstractGame implements Game {
 		}
 	}
 
-	private boolean isConditionHappened(ConditionModel condition, ItemModel item) {
-		if (condition.getObject().equals(item.getName())
-				&& condition.getStatus().equals(item.getStatus())) {
+	private boolean isConditionHappened(ConditionModel condition, ItemModel item)
+	{
+		if (condition.getObject().equals(item.getName()) && condition.getStatus().equals(item.getStatus()))
+		{
 			return true;
 		}
 		return false;
 	}
 
-	private RoomModel getRoomByName(String name) {
-		for (RoomModel r : rooms) {
-			if (r.getName().equals(name)) {
+	private RoomModel getRoomByName(String name)
+	{
+		for (RoomModel r : rooms)
+		{
+			if (r.getName().equals(name))
+			{
 				return r;
 			}
 		}
 		return null;
 	}
 
-	private boolean executeActionIfExists(String actionString) {
+	private boolean executeActionIfExists(String actionString)
+	{
 		ActionModel actionModel = ActionParserHelper.parse(actionString);
-		if (actionModel == null) {
+		if (actionModel == null)
+		{
 			return false;
 		}
 		ActionType type = actionModel.getActionType();
-		switch (type) {
+		switch (type)
+		{
 		case ADD:
 			ItemModel item = getItem(actionModel.getItem());
-			if (item != null) {
+			if (item != null)
+			{
 				String ownerName = actionModel.getOwner();
 				ItemContainer owner = getItemContainerByName(ownerName);
-				if (owner != null) {
+				if (owner != null)
+				{
 					owner.addItem(item.getName());
-				} else {
-					throw new RuntimeException("owner cannot be null (" + owner
-							+ ")");
+				}
+				else
+				{
+					throw new RuntimeException("owner cannot be null (" + owner + ")");
 				}
 			}
 			break;
 		case DELETE:
 			String objName = actionModel.getItem();
 			CreatureModel creature = getObjectByName(objName);
-			if (creature != null) {
+			if (creature != null)
+			{
 				creature.setExists(false);
-			} else {
-				throw new RuntimeException("object cannot be null (" + objName
-						+ ")");
+			}
+			else
+			{
+				throw new RuntimeException("object cannot be null (" + objName + ")");
 			}
 			break;
 		case UPDATE:
 			HasStatus owner = getOwnerByName(actionModel.getItem());
-			if (owner != null) {
+			if (owner != null)
+			{
 				owner.setStatus(actionModel.getStatus());
 			}
 			break;
@@ -231,107 +268,141 @@ public abstract class AbstractGame implements Game {
 		return true;
 	}
 
-	private CreatureModel getObjectByName(String name) {
+	private CreatureModel getObjectByName(String name)
+	{
 		return getCreatureByName(name);
 	}
 
-	private HasStatus getOwnerByName(String name) {
-		for (ContainerModel obj : containers) {
-			if (obj.getName().equals(name)) {
+	private HasStatus getOwnerByName(String name)
+	{
+		for (ContainerModel obj : containers)
+		{
+			if (obj.getName().equals(name))
+			{
 				return obj;
 			}
 		}
 		return getInventoryItem(name);
 	}
 
-	private ItemContainer getItemContainerByName(String name) {
+	private ItemContainer getItemContainerByName(String name)
+	{
 		return itemContainers.get(name);
 	}
 
-	public void printInventory() {
-		if (inventory.hasItems()) {
-			print(String.format(INVENTORY_CONTAINS_FORMAT,
-					inventory.itemsToString()));
-		} else {
+	public void printInventory()
+	{
+		if (inventory.hasItems())
+		{
+			print(String.format(INVENTORY_CONTAINS_FORMAT, inventory.itemsToString()));
+		}
+		else
+		{
 			print(INVENTORY_EMPTY_MESSAGE);
 		}
 	}
 
-	public void goInDirection(DirectionType direction) {
+	public void goInDirection(DirectionType direction)
+	{
 		String nextRoomName = currentRoom.nextRoom(direction);
 		RoomModel nextRoom = getRoomByName(nextRoomName);
-		if (nextRoom == null) {
+		if (nextRoom == null)
+		{
 			print(NO_DIRECTION_MESSAGE);
-		} else {
+		}
+		else
+		{
 			currentRoom = nextRoom;
 			printCurrentRoom();
 		}
 	}
 
-	private ItemModel getItem(String itemName) {
-		for (ItemModel item : items) {
-			if (item.keywordMatch(itemName)) {
+	private ItemModel getItem(String itemName)
+	{
+		for (ItemModel item : items)
+		{
+			if (item.keywordMatch(itemName))
+			{
 				return item;
 			}
 		}
 		return null;
 	}
 
-	private ItemModel getItemInCurrentRoom(String itemName) {
-		if (isCurrentRoomContainsItem(itemName)) {
+	private ItemModel getItemInCurrentRoom(String itemName)
+	{
+		if (isCurrentRoomContainsItem(itemName))
+		{
 			return getItem(itemName);
 		}
 		return null;
 	}
 
-	private CreatureModel getCreatureByName(String creatureName) {
-		for (CreatureModel creatureModel : creatures) {
-			if (creatureModel.isExists()
-					&& creatureModel.getName().equals(creatureName)) {
+	private CreatureModel getCreatureByName(String creatureName)
+	{
+		for (CreatureModel creatureModel : creatures)
+		{
+			if (creatureModel.isExists() && creatureModel.getName().equals(creatureName))
+			{
 				return creatureModel;
 			}
 		}
 		return null;
 	}
 
-	private ContainerModel getContainerByName(String name) {
-		for (ContainerModel model : containers) {
-			if (model.getName().equals(name)) {
+	private ContainerModel getContainerByName(String name)
+	{
+		for (ContainerModel model : containers)
+		{
+			if (model.getName().equals(name))
+			{
 				return model;
 			}
 		}
 		return null;
 	}
 
-	public boolean exitGame() {
-		try {
-			consoleWrapper.checkAccess();
-			consoleWrapper.interrupt();
-			if (consoleWrapper.isInterrupted()) {
+	public boolean exitGame()
+	{
+		try
+		{
+			replThread.checkAccess();
+			replThread.interrupt();
+			if (replThread.isInterrupted())
+			{
 				print(BYE_WORD);
 				System.exit(SUCCESS_EXIT_STATUS);
-			} else {
-				System.exit(ERROR_EXIT_STATUS);	
 			}
-		} catch (SecurityException e) {
+			else
+			{
+				System.exit(ERROR_EXIT_STATUS);
+			}
+		}
+		catch (SecurityException e)
+		{
 			System.exit(ERROR_EXIT_STATUS);
 		}
 		return true;
 	}
 
-	public boolean addToInventory(String itemName) {
+	public boolean addToInventory(String itemName)
+	{
 		ItemModel item = getItemInCurrentRoom(itemName);
-		if (item != null) {
+		if (item != null)
+		{
 
-			if (!inventory.contains(item.getName())) {
+			if (!inventory.contains(item.getName()))
+			{
 				inventory.addItem(item.getName());
 			}
 
 			currentRoom.removeItem(item.getName());
 
 			List<ContainerModel> containers = getContainersInCurrentRoom();
-			for (ContainerModel container : containers) {
-				if (container.contains(item.getName())) {
+			for (ContainerModel container : containers)
+			{
+				if (container.contains(item.getName()))
+				{
 					container.removeItem(item.getName());
 				}
 			}
@@ -341,21 +412,26 @@ public abstract class AbstractGame implements Game {
 		return false;
 	}
 
-	public boolean attackCreatureWithItem(String creatureName, String itemName) {
+	public boolean attackCreatureWithItem(String creatureName, String itemName)
+	{
 		CreatureModel creature = getCreatureByName(creatureName);
 		ItemModel item = getItem(itemName);
-		if (creature != null && item != null) {
-			if (creature.getVulnerability().equals(item.getName())) {
+		if (creature != null && item != null)
+		{
+			if (creature.getVulnerability().equals(item.getName()))
+			{
 				AttackModel attackModel = creature.getAttack();
-				if (attackModel != null) {
-					if (isConditionHappened(attackModel.getCondition(), item)) {
+				if (attackModel != null)
+				{
+					if (isConditionHappened(attackModel.getCondition(), item))
+					{
 						List<String> actions = attackModel.getActions();
-						for (String action : actions) {
+						for (String action : actions)
+						{
 							executeActionIfExists(action);
 						}
 
-						print(String.format(ATTACK_MESSAGE_FORMAT,
-								creature.getName(), item.getName()));
+						print(String.format(ATTACK_MESSAGE_FORMAT, creature.getName(), item.getName()));
 						print(attackModel.getMessage());
 						return true;
 					}
@@ -365,17 +441,23 @@ public abstract class AbstractGame implements Game {
 		return false;
 	}
 
-	public boolean turnOnItem(String itemName) {
+	public boolean turnOnItem(String itemName)
+	{
 		ItemModel item = getInventoryItem(itemName);
-		if (item != null) {
+		if (item != null)
+		{
 			TurnOnModel turnOnModel = item.getTurnOnModel();
-			if (turnOnModel != null) {
+			if (turnOnModel != null)
+			{
 				print(String.format(ACTIVATE_FORMAT, item.getName()));
 				print(turnOnModel.getMessage());
 
-				if (executeActionIfExists(item.getTurnOnModel().getAction())) {
+				if (executeActionIfExists(item.getTurnOnModel().getAction()))
+				{
 					checkItemTriggers(item);
-				} else {
+				}
+				else
+				{
 					print(ERROR_MESSAGE);
 				}
 				return true;
@@ -384,16 +466,22 @@ public abstract class AbstractGame implements Game {
 		return false;
 	}
 
-	public boolean putItemToContainer(String itemName, String containerName) {
+	public boolean putItemToContainer(String itemName, String containerName)
+	{
 		ContainerModel container = getContainerInCurrentRoomByName(containerName);
 		ItemModel item = getInventoryItem(itemName);
-		if (container != null && item != null) {
-			if (container.getAccept() != null) {
-				if (container.getAccept().equals(item.getName())) {
+		if (container != null && item != null)
+		{
+			if (container.getAccept() != null)
+			{
+				if (container.getAccept().equals(item.getName()))
+				{
 					proccessPuttingItem(container, item);
 					return true;
 				}
-			} else {
+			}
+			else
+			{
 				proccessPuttingItem(container, item);
 				return true;
 			}
@@ -401,23 +489,29 @@ public abstract class AbstractGame implements Game {
 		return false;
 	}
 
-	private void proccessPuttingItem(ContainerModel container, ItemModel item) {
-		print(String.format(PUT_MESSAGE_FORMAT, item.getName(),
-				container.getName()));
+	private void proccessPuttingItem(ContainerModel container, ItemModel item)
+	{
+		print(String.format(PUT_MESSAGE_FORMAT, item.getName(), container.getName()));
 		container.addItem(item.getName());
 		inventory.removeItem(item.getName());
-		if (container.hasTriggers()) {
+		if (container.hasTriggers())
+		{
 			processTrigger(container.getTrigger());
 		}
 	}
 
-	public boolean readItem(String itemName) {
+	public boolean readItem(String itemName)
+	{
 		ItemModel item = getInventoryItem(itemName);
-		if (item != null) {
+		if (item != null)
+		{
 			String message = item.getMessage();
-			if (message != null && !message.isEmpty()) {
+			if (message != null && !message.isEmpty())
+			{
 				print(message);
-			} else {
+			}
+			else
+			{
 				print(NOTHING_MESSAGE);
 			}
 			return true;
@@ -425,14 +519,18 @@ public abstract class AbstractGame implements Game {
 		return false;
 	}
 
-	public boolean openContainer(String containerName) {
+	public boolean openContainer(String containerName)
+	{
 		ContainerModel container = getContainerInCurrentRoomByName(containerName);
-		if (container != null) {
-			if (container.hasItems()) {
-				print(String.format(CONTAINS_MESSAGE_FORMAT,
-						container.getName(), container.itemsToString()));
+		if (container != null)
+		{
+			if (container.hasItems())
+			{
+				print(String.format(CONTAINS_MESSAGE_FORMAT, container.getName(), container.itemsToString()));
 
-			} else {
+			}
+			else
+			{
 				print(String.format(EMPTY_MESSAGE_FORMAT, containerName));
 			}
 			return true;
@@ -440,27 +538,34 @@ public abstract class AbstractGame implements Game {
 		return false;
 	}
 
-	private ContainerModel getContainerInCurrentRoomByName(String name) {
+	private ContainerModel getContainerInCurrentRoomByName(String name)
+	{
 		List<String> containers = currentRoom.getContainers();
-		for (String containerName : containers) {
-			if (containerName.equals(name)) {
+		for (String containerName : containers)
+		{
+			if (containerName.equals(name))
+			{
 				return getContainerByName(containerName);
 			}
 		}
 		return null;
 	}
 
-	private List<ContainerModel> getContainersInCurrentRoom() {
+	private List<ContainerModel> getContainersInCurrentRoom()
+	{
 		List<ContainerModel> result = new ArrayList<ContainerModel>();
 		List<String> containers = currentRoom.getContainers();
-		for (String containerName : containers) {
+		for (String containerName : containers)
+		{
 			result.add(getContainerByName(containerName));
 		}
 		return result;
 	}
 
-	private ItemModel getInventoryItem(String itemName) {
-		if (inventory.contains(itemName)) {
+	private ItemModel getInventoryItem(String itemName)
+	{
+		if (inventory.contains(itemName))
+		{
 			return getItem(itemName);
 		}
 		return null;
@@ -468,21 +573,26 @@ public abstract class AbstractGame implements Game {
 
 	public abstract String getGameFile();
 
-	public List<AbstractCommand> getCommandExecutors() {
+	public List<AbstractCommand> getCommandExecutors()
+	{
 		return executors;
 	}
 
-	private void printCurrentRoom() {
+	private void printCurrentRoom()
+	{
 		print(currentRoom.getDescription());
 	}
 
-	private boolean isCurrentRoomContainsItem(String itemName) {
+	private boolean isCurrentRoomContainsItem(String itemName)
+	{
 		boolean inRoom = currentRoom.getItem(itemName);
 		boolean inContainers = false;
 		List<String> containers = currentRoom.getContainers();
-		for (String containerName : containers) {
+		for (String containerName : containers)
+		{
 			ContainerModel container = getContainerByName(containerName);
-			if (container != null && container.contains(itemName)) {
+			if (container != null && container.contains(itemName))
+			{
 				inContainers = true;
 				break;
 			}
@@ -490,12 +600,19 @@ public abstract class AbstractGame implements Game {
 		return inRoom || inContainers;
 	}
 
-	private void print(Collection<String> messages) {
-		consoleWrapper.consolePrint(messages.toArray(new String[] {}));
+	private void print(Collection<String> messages)
+	{
+		replThread.consolePrint(messages.toArray(new String[] {}));
 	}
 
-	protected void print(String... messages) {
-		consoleWrapper.consolePrint(messages);
+	protected void print(String... messages)
+	{
+		replThread.consolePrint(messages);
 	}
 
+	@Override
+	public void setREPLThread(REPLThread replThread)
+	{
+		this.replThread = replThread;
+	}
 }

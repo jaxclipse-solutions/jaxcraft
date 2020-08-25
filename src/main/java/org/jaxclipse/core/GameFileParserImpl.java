@@ -22,6 +22,7 @@ public class GameFileParserImpl {
 			InputStream streamContent = fileHelper.fileAsStream(filename);
 			return (GameInitModel) unmarshaller.unmarshal(streamContent);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new GameFileParseException(e);
 		}
 	}
