@@ -15,10 +15,10 @@ import org.jaxclipse.inject.CommandProvider;
 public class GameImpl extends AbstractGame implements Game {
 
   @Inject
-	public GameImpl(ConsoleWrapper consoleWrapper, CommandProvider commandProvider,
+	public GameImpl(CommandProvider commandProvider,
 			InventoryContainer inventory)
 	{
-		super(consoleWrapper, commandProvider, inventory);
+		super(commandProvider, inventory);
   }
 
   @Override
@@ -40,10 +40,10 @@ public class GameImpl extends AbstractGame implements Game {
 
   @Override
   public String getGameFile() {
-    // return "src/main/resources/sample.txt.xml";
     // return "sample.txt.xml";
     return "House.txt.xml";
 
   }
+
 
 }

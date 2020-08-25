@@ -36,4 +36,14 @@ public class GameExecutor {
 	private GameInitModel parseGameFile() throws GameFileParseException {
 		return gameFileParserImpl.parse(game.getGameFile());
 	}
+
+	public void setUpREPL(REPLThread replThread)
+	{
+		// TODO: avoid code smells
+		System.out.println("TEST setUpREPL...");
+		replThread.getTextIO().getTextTerminal().println("GameExecutor::: setUpRepl...");
+		game.setREPLThread(replThread);
+		replThread.setGame(game);
+
+	}
 }
