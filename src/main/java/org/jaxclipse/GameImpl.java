@@ -34,7 +34,7 @@ public class GameImpl extends AbstractGame implements Game {
         + "\\_| \\_\\___/ \\___/|_| |_| |_| \\____/_/\\_\\ .__/|_|\\___/|_|  \\___|_|   \n"
         + "                                       | |                          \n"
         + "                                       |_|                          \n" + "\n" + "\n"
-        + "[display startup message]\n");
+				+ "\n");
     super.init(gameInitModel);
   }
 

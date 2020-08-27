@@ -1,6 +1,6 @@
 package org.jaxclipse.base;
 
-import org.jaxclipse.REPLThread;
+import org.jaxclipse.TextIOApp;
 import org.jaxclipse.core.ActionParserHelper;
 import org.jaxclipse.core.InventoryContainer;
 import org.jaxclipse.core.UserCommand;
@@ -51,7 +51,7 @@ public abstract class AbstractGame implements Game
 
 	private final InventoryContainer inventory;
 
-	private REPLThread replThread;
+	private TextIOApp replThread;
 	private final CommandProvider commandProvider;
 
 	public AbstractGame(CommandProvider commandProvider, InventoryContainer inventory)
@@ -366,17 +366,17 @@ public abstract class AbstractGame implements Game
 	{
 		try
 		{
-			replThread.checkAccess();
-			replThread.interrupt();
-			if (replThread.isInterrupted())
-			{
+			// replThread.checkAccess();
+			// replThread.interrupt();
+			// if (replThread.isInterrupted())
+			// {
 				print(BYE_WORD);
 				System.exit(SUCCESS_EXIT_STATUS);
-			}
-			else
-			{
+			// }
+			// else
+			// {
 				System.exit(ERROR_EXIT_STATUS);
-			}
+			// }
 		}
 		catch (SecurityException e)
 		{
@@ -611,7 +611,7 @@ public abstract class AbstractGame implements Game
 	}
 
 	@Override
-	public void setREPLThread(REPLThread replThread)
+	public void setREPLThread(TextIOApp replThread)
 	{
 		this.replThread = replThread;
 	}

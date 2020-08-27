@@ -37,7 +37,7 @@ public class GameExecutor {
 		return gameFileParserImpl.parse(game.getGameFile());
 	}
 
-	public void setUpREPL(REPLThread replThread)
+	public void setUpREPL(TextIOApp replThread)
 	{
 		// TODO: avoid code smells
 		System.out.println("TEST setUpREPL...");

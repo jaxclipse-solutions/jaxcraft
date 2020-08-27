@@ -1,12 +1,12 @@
 package org.jaxclipse.base;
 
-import java.util.List;
-
-import org.jaxclipse.REPLThread;
+import org.jaxclipse.TextIOApp;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.command.AbstractCommand;
 import org.jaxclipse.core.model.DirectionType;
 import org.jaxclipse.core.model.GameInitModel;
+
+import java.util.List;
 
 public interface Game {
 
@@ -112,5 +112,5 @@ public interface Game {
 
 	boolean exitGame();
 
-	void setREPLThread(REPLThread replThread);
+	void setREPLThread(TextIOApp replThread);
 }
