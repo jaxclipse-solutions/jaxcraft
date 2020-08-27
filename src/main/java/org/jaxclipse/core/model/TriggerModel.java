@@ -1,14 +1,14 @@
 package org.jaxclipse.core.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.jaxclipse.core.model.jaxb.adapters.TriggerTypeAdapter;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.jaxclipse.core.model.jaxb.adapters.TriggerTypeAdapter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TriggerModel {
 

@@ -3,6 +3,7 @@ package org.jaxclipse.core.command;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jaxclipse.base.Game;
 import org.jaxclipse.core.UserCommand;
 
 /**
@@ -22,7 +23,8 @@ public final class InventoryCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean execute(UserCommand command) {
+	public boolean execute(UserCommand command, Game game)
+	{
 		game.printInventory();
 		return true;
 	}

@@ -1,17 +1,17 @@
 package org.jaxclipse;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-
 import org.beryx.textio.TerminalProperties;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
 import org.beryx.textio.web.RunnerData;
 import org.jaxclipse.base.Game;
+import org.jaxclipse.core.CommandProvider;
+import org.jaxclipse.core.GameFileParserImpl;
+import org.jaxclipse.core.InventoryContainer;
+import org.jaxclipse.core.InventoryContainerImpl;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.UserCommandParser;
 import org.jaxclipse.core.command.AbstractCommand;
-import org.jaxclipse.inject.MainModule;
 
 import java.util.Collection;
 import java.util.function.BiConsumer;
@@ -25,8 +25,15 @@ public class TextIOApp implements BiConsumer<TextIO, RunnerData>
 	@Override
 	public void accept(TextIO textIO, RunnerData arg1)
 	{
-		Injector injector = Guice.createInjector(new MainModule());
-		GameExecutor gameExecutor = injector.getInstance(GameExecutor.class);
+		this.textIO = textIO;
+		// Injector injector = Guice.createInjector(new MainModule());
+		//
+		GameFileParserImpl gfpi = new GameFileParserImpl();
+		InventoryContainer ic = new InventoryContainerImpl();
+		CommandProvider cp = new CommandProvider();
+		Game game = new GameImpl(cp, ic);
+
+		GameExecutor gameExecutor = new GameExecutor(game, gfpi);
 
 		gameExecutor.setUpREPL(this);
 		gameExecutor.init();

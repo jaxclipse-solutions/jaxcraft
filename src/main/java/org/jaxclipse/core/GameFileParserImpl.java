@@ -1,19 +1,16 @@
 package org.jaxclipse.core;
 
-import java.io.InputStream;
+import org.jaxclipse.core.exception.GameFileParseException;
+import org.jaxclipse.core.model.GameInitModel;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
-import org.jaxclipse.core.exception.GameFileParseException;
-import org.jaxclipse.core.model.GameInitModel;
-
-import com.google.inject.Inject;
+import java.io.InputStream;
 
 public class GameFileParserImpl {
 
-	@Inject
-	private FileHelper fileHelper;
+	private FileHelper fileHelper = new FileHelper();
 
 	public GameInitModel parse(String filename) throws GameFileParseException {
 		try {

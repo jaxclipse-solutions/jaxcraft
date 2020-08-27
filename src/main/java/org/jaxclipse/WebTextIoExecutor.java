@@ -36,7 +36,7 @@ public class WebTextIoExecutor
 		app.withOnDispose(stopServer).withOnAbort(stopServer).withPort(port).withMaxInactiveSeconds(600).withStaticFilesLocation("public-html")
 				.init();
 
-		String url = "http://localhost:" + app.getPort() + "/web-demo.html";
+		String url = "http://localhost:" + app.getPort() + "/jaxcraft.html";
 		boolean browserStarted = false;
 		if (Desktop.isDesktopSupported())
 		{

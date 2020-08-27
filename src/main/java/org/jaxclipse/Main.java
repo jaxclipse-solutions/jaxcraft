@@ -5,19 +5,12 @@ import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 import org.beryx.textio.TextTerminal;
 import org.beryx.textio.TextTerminalProvider;
-import org.beryx.textio.console.ConsoleTextTerminalProvider;
-import org.beryx.textio.jline.JLineTextTerminalProvider;
-import org.beryx.textio.swing.SwingTextTerminalProvider;
 import org.beryx.textio.system.SystemTextTerminal;
-import org.beryx.textio.system.SystemTextTerminalProvider;
 import org.beryx.textio.web.RatpackTextIoApp;
 import org.beryx.textio.web.RunnerData;
-import org.beryx.textio.web.SparkTextIoApp;
 import org.beryx.textio.web.TextIoApp;
 import org.beryx.textio.web.WebTextTerminal;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -93,25 +86,28 @@ public class Main
 				return name;
 			}
 		}
-		Provider textIoAppProvider = textIO.<Provider> newGenericInputReader(null)
-				.withNumberedPossibleValues(new Provider("Ratpack", () -> new RatpackTextIoApp(app, webTextTerm)),
-						new Provider("Spark", () -> new SparkTextIoApp(app, webTextTerm)))
-				.read("\nChoose the web framework to be used");
+		// Provider textIoAppProvider = textIO.<Provider> newGenericInputReader(null)
+		// .withNumberedPossibleValues(new Provider("Ratpack", () -> new RatpackTextIoApp(app, webTextTerm)),
+		// new Provider("Spark", () -> new SparkTextIoApp(app, webTextTerm)))
+		// .read("\nChoose the web framework to be used");
 
+		Provider textIoAppProvider = new Provider("Ratpack", () -> new RatpackTextIoApp(app, webTextTerm));
 		return textIoAppProvider.supplier.get();
 	}
 
 	private static void configurePort(TextIO textIO, WebTextIoExecutor webTextIoExecutor, int defaultPort)
 	{
-		int port = textIO.newIntInputReader().withDefaultValue(defaultPort).read("Server port number");
+		// int port = textIO.newIntInputReader().withDefaultValue(defaultPort).read("Server port number");
+		int port = 8080;
 		webTextIoExecutor.withPort(port);
 	}
 
 	private static BiConsumer<TextIO, RunnerData> chooseApp(TextIO textIO)
 	{
-		List<BiConsumer<TextIO, RunnerData>> apps = Arrays.asList(new TextIOApp(), new DebugTextIOApp());
-		BiConsumer<TextIO, RunnerData> app = textIO.<BiConsumer<TextIO, RunnerData>> newGenericInputReader(null).withNumberedPossibleValues(apps)
-				.read("Choose the application to be run");
+		// List<BiConsumer<TextIO, RunnerData>> apps = Arrays.asList(new DebugTextIOApp());
+		// BiConsumer<TextIO, RunnerData> app = textIO.<BiConsumer<TextIO, RunnerData>> newGenericInputReader(null).withNumberedPossibleValues(apps)
+		// .read("Choose the application to be run");
+		BiConsumer<TextIO, RunnerData> app = new TextIOApp();
 		String propsFileName = app.getClass().getSimpleName() + ".properties";
 		System.setProperty(AbstractTextTerminal.SYSPROP_PROPERTIES_FILE_LOCATION, propsFileName);
 
@@ -121,14 +117,18 @@ public class Main
 	private static TextIO chooseTextIO()
 	{
 		SystemTextTerminal terminal = new SystemTextTerminal();
-		TextIO textIO = new TextIO(terminal);
+		// TextIO textIO = new TextIO(terminal);
 		while (true)
 		{
-			TextTerminalProvider terminalProvider = textIO.<TextTerminalProvider> newGenericInputReader(null)
-					.withNumberedPossibleValues(new NamedProvider("Default terminal (provided by TextIoFactory)", TextIoFactory::getTextTerminal),
-							new SystemTextTerminalProvider(), new ConsoleTextTerminalProvider(), new JLineTextTerminalProvider(),
-							new SwingTextTerminalProvider(), new NamedProvider("Web terminal", WebTextTerminal::new))
-					.read("\nChoose the terminal to be used for running the demo");
+			// TextTerminalProvider terminalProvider = textIO.<TextTerminalProvider> newGenericInputReader(null)
+			// .withNumberedPossibleValues(new NamedProvider("Default terminal (provided by TextIoFactory)", TextIoFactory::getTextTerminal),
+			// new SystemTextTerminalProvider(), new ConsoleTextTerminalProvider(), new JLineTextTerminalProvider(),
+			// new SwingTextTerminalProvider(), new NamedProvider("Web terminal", WebTextTerminal::new))
+			// .read("\nChoose the terminal to be used for running the demo");
+			TextTerminalProvider terminalProvider = new NamedProvider("Web terminal", WebTextTerminal::new);
+
+			// TextTerminalProvider terminalProvider = new NamedProvider("Default terminal (provided by TextIoFactory)",
+			// TextIoFactory::getTextTerminal);
 
 			TextTerminal<?> chosenTerminal = null;
 			String errMsg = null;

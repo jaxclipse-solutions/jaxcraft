@@ -1,9 +1,9 @@
 package org.jaxclipse.core.model;
 
-import javax.xml.bind.annotation.XmlElement;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import javax.xml.bind.annotation.XmlElement;
 
 public class TurnOnModel {
 	private String message;

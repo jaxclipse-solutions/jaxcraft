@@ -2,6 +2,7 @@ package org.jaxclipse.base;
 
 import org.jaxclipse.TextIOApp;
 import org.jaxclipse.core.ActionParserHelper;
+import org.jaxclipse.core.CommandProvider;
 import org.jaxclipse.core.InventoryContainer;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.command.AbstractCommand;
@@ -29,7 +30,6 @@ import org.jaxclipse.core.model.TriggerType;
 import org.jaxclipse.core.model.TurnOnModel;
 import org.jaxclipse.core.model.core.HasStatus;
 import org.jaxclipse.core.model.core.ItemContainer;
-import org.jaxclipse.inject.CommandProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -137,7 +137,7 @@ public abstract class AbstractGame implements Game
 		{
 			if (executor.getCommands().contains(userCommand.getCommand()))
 			{
-				return executor.execute(userCommand);
+				return executor.execute(userCommand, this);
 			}
 		}
 

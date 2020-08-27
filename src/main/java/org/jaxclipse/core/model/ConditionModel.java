@@ -1,11 +1,9 @@
 package org.jaxclipse.core.model;
 
+import org.jaxclipse.core.model.jaxb.adapters.BooleanAdapter;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.jaxclipse.core.model.jaxb.adapters.BooleanAdapter;
 
 public class ConditionModel {
 
@@ -53,7 +51,7 @@ public class ConditionModel {
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder().append(has).append(object).append(owner)
+		return new org.apache.commons.lang3.builder.HashCodeBuilder().append(has).append(object).append(owner)
 				.append(status).toHashCode();
 	}
 
@@ -61,7 +59,7 @@ public class ConditionModel {
 	public boolean equals(Object obj) {
 		if (obj instanceof ConditionModel) {
 			final ConditionModel other = (ConditionModel) obj;
-			return new EqualsBuilder().append(has, other.has)
+			return new org.apache.commons.lang3.builder.EqualsBuilder().append(has, other.has)
 					.append(object, other.object).append(owner, other.owner)
 					.append(status, other.status).isEquals();
 		} else {

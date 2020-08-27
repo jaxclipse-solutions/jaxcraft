@@ -1,13 +1,13 @@
 package org.jaxclipse.core.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.jaxclipse.core.model.core.ItemContainer;
 
 import javax.xml.bind.annotation.XmlElement;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.jaxclipse.core.model.core.ItemContainer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents container for items, which may has own triggers
