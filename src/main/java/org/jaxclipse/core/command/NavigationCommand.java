@@ -3,6 +3,7 @@ package org.jaxclipse.core.command;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jaxclipse.base.Game;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.model.DirectionType;
 
@@ -23,7 +24,8 @@ public final class NavigationCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean execute(UserCommand command) {
+	public boolean execute(UserCommand command, Game game)
+	{
 		DirectionType direction = DirectionType
 				.getByShortName(command.getCommand());
 		try {

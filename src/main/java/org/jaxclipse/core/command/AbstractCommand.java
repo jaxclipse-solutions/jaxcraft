@@ -5,11 +5,8 @@ import java.util.List;
 import org.jaxclipse.base.Game;
 import org.jaxclipse.core.UserCommand;
 
-import com.google.inject.Inject;
-
 /**
- * This abstract class is the superclass of all classes representing an
- * commands.
+ * This abstract class is the superclass of all classes representing an commands.
  * 
  * @author dbimko
  * 
@@ -23,10 +20,8 @@ import com.google.inject.Inject;
  * @see TurnOnCommand
  * 
  */
-public abstract class AbstractCommand {
-
-	@Inject
-	protected Game game;
+public abstract class AbstractCommand
+{
 
 	/**
 	 * Returns an array of all recognized commands
@@ -42,5 +37,5 @@ public abstract class AbstractCommand {
 	 *            Contains parameter for command
 	 * @return
 	 */
-	public abstract boolean execute(UserCommand command);
+	public abstract boolean execute(UserCommand command, Game game);
 }

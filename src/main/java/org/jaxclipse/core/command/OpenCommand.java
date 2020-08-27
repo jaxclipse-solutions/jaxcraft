@@ -3,6 +3,7 @@ package org.jaxclipse.core.command;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jaxclipse.base.Game;
 import org.jaxclipse.core.UserCommand;
 
 /**
@@ -26,7 +27,8 @@ public final class OpenCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean execute(UserCommand command) {
+	public boolean execute(UserCommand command, Game game)
+	{
 		String arg = command.getArg(ITEM_INDEX);
 		return game.openContainer(arg);
 	}

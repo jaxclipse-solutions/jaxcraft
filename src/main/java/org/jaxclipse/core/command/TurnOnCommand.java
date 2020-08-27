@@ -3,6 +3,7 @@ package org.jaxclipse.core.command;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jaxclipse.base.Game;
 import org.jaxclipse.core.UserCommand;
 
 /**
@@ -25,7 +26,8 @@ public final class TurnOnCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean execute(UserCommand command) {
+	public boolean execute(UserCommand command, Game game)
+	{
 		return game.turnOnItem(command.getArg(ITEM_INDEX));
 	}
 }
