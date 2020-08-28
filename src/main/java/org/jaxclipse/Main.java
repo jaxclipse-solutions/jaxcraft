@@ -1,8 +1,6 @@
 package org.jaxclipse;
 
-import org.beryx.textio.AbstractTextTerminal;
 import org.beryx.textio.TextIO;
-import org.beryx.textio.TextIoFactory;
 import org.beryx.textio.TextTerminal;
 import org.beryx.textio.TextTerminalProvider;
 import org.beryx.textio.system.SystemTextTerminal;
@@ -40,8 +38,17 @@ public class Main
 		}
 	}
 
-	public static void main(String[] args)
+	private static final String SYSPROP_PROPERTIES_FILE_LOCATION = "jaxcraft.properties.location";
+
+	public static void main(String[] args) throws Exception
 	{
+		// System.setProperty(AbstractTextTerminal.SYSPROP_PROPERTIES_FILE_LOCATION, "jaxcraft.properties");
+		// String FOS = System.getProperty("FAIL_ON_START");
+		// if (FOS.equals("true"))
+		// {
+		// System.out.println("yeet");
+		// throw new Exception();
+		// }
 
 		SystemTextTerminal sysTerminal = new SystemTextTerminal();
 		TextIO sysTextIO = new TextIO(sysTerminal);
@@ -109,7 +116,7 @@ public class Main
 		// .read("Choose the application to be run");
 		BiConsumer<TextIO, RunnerData> app = new TextIOApp();
 		String propsFileName = app.getClass().getSimpleName() + ".properties";
-		System.setProperty(AbstractTextTerminal.SYSPROP_PROPERTIES_FILE_LOCATION, propsFileName);
+		System.setProperty(Main.SYSPROP_PROPERTIES_FILE_LOCATION, propsFileName);
 
 		return app;
 	}

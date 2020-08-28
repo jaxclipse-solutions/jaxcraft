@@ -1,5 +1,7 @@
 package org.jaxclipse.core;
 
+import com.google.common.collect.Lists;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.jaxclipse.core.command.AbstractCommand;
 import org.jaxclipse.core.command.AttackCommand;
@@ -12,8 +14,11 @@ import org.jaxclipse.core.command.ReadCommand;
 import org.jaxclipse.core.command.TakeCommand;
 import org.jaxclipse.core.command.TurnOnCommand;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Inject provider for commands as factory
@@ -41,11 +46,15 @@ public class CommandProvider
 
 	}
 
-	public AbstractCommand get() {
-		throw new NotImplementedException("no abstract command to get.");
+	public List<AbstractCommand> getAllCommands()
+	{
+
+		return commandMap.values().stream().collect(Collectors.toList());
+
 	}
 
-	public AbstractCommand get(Class<? extends AbstractCommand> cls) {
+	public AbstractCommand get(Class<? extends AbstractCommand> cls)
+	{
 		return commandMap.get(cls);
 	}
 

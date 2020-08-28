@@ -6,15 +6,6 @@ import org.jaxclipse.core.CommandProvider;
 import org.jaxclipse.core.InventoryContainer;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.command.AbstractCommand;
-import org.jaxclipse.core.command.AttackCommand;
-import org.jaxclipse.core.command.ExitCommand;
-import org.jaxclipse.core.command.InventoryCommand;
-import org.jaxclipse.core.command.NavigationCommand;
-import org.jaxclipse.core.command.OpenCommand;
-import org.jaxclipse.core.command.PutCommand;
-import org.jaxclipse.core.command.ReadCommand;
-import org.jaxclipse.core.command.TakeCommand;
-import org.jaxclipse.core.command.TurnOnCommand;
 import org.jaxclipse.core.model.ActionModel;
 import org.jaxclipse.core.model.ActionType;
 import org.jaxclipse.core.model.AttackModel;
@@ -32,10 +23,15 @@ import org.jaxclipse.core.model.core.HasStatus;
 import org.jaxclipse.core.model.core.ItemContainer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+
+import jline.internal.Log;
 
 public abstract class AbstractGame implements Game
 {
@@ -45,19 +41,18 @@ public abstract class AbstractGame implements Game
 	private List<ContainerModel> containers;
 	private List<CreatureModel> creatures;
 	private final List<TriggerModel> triggers;
-	private final List<AbstractCommand> executors;
+	private List<AbstractCommand> executors;
 	private RoomModel currentRoom;
 	private final Map<String, ItemContainer> itemContainers;
 
 	private final InventoryContainer inventory;
 
-	private TextIOApp replThread;
+	private TextIOApp textIOApp;
 	private final CommandProvider commandProvider;
 
 	public AbstractGame(CommandProvider commandProvider, InventoryContainer inventory)
 	{
 		rooms = new ArrayList<>();
-		executors = new ArrayList<>();
 		triggers = new ArrayList<>();
 		itemContainers = new HashMap<>();
 		this.inventory = inventory;
@@ -67,7 +62,7 @@ public abstract class AbstractGame implements Game
 
 	public void init(GameInitModel gameInitModel)
 	{
-		addCommands();
+		executors = commandProvider.getAllCommands();
 
 		rooms = gameInitModel.getRooms();
 		items = gameInitModel.getItems();
@@ -84,20 +79,7 @@ public abstract class AbstractGame implements Game
 	public void play()
 	{
 		printCurrentRoom();
-		replThread.setShowPrompt(true);
-	}
-
-	private void addCommands()
-	{
-		executors.add(commandProvider.get(NavigationCommand.class));
-		executors.add(commandProvider.get(InventoryCommand.class));
-		executors.add(commandProvider.get(TakeCommand.class));
-		executors.add(commandProvider.get(ReadCommand.class));
-		executors.add(commandProvider.get(TurnOnCommand.class));
-		executors.add(commandProvider.get(AttackCommand.class));
-		executors.add(commandProvider.get(OpenCommand.class));
-		executors.add(commandProvider.get(PutCommand.class));
-		executors.add(commandProvider.get(ExitCommand.class));
+		textIOApp.setShowPrompt(true);
 	}
 
 	private void initTriggers(GameInitModel model)
@@ -121,28 +103,49 @@ public abstract class AbstractGame implements Game
 
 	public boolean processCommand(UserCommand userCommand)
 	{
-		List<TriggerModel> triggers = currentRoom.getTriggers();
-		for (TriggerModel trigger : triggers)
+		Optional<TriggerModel> trigger = currentRoom.getTriggers().stream().filter(e -> e.getCommand().equals(userCommand.getCommand())).findFirst();
+		if (trigger.isPresent())
 		{
-			if (trigger.getCommand().equals(userCommand.getCommand()))
+			if (processTrigger(trigger.get()))
 			{
-				if (processTrigger(trigger))
-				{
-					return true;
-				}
+				return true;
 			}
 		}
-
-		for (AbstractCommand executor : executors)
+		else
 		{
-			if (executor.getCommands().contains(userCommand.getCommand()))
-			{
-				return executor.execute(userCommand, this);
-			}
+			Log.debug("No triggers processed");
 		}
 
-		print(ERROR_MESSAGE);
-		return false;
+		// List<TriggerModel> triggers = currentRoom.getTriggers();
+		// for (TriggerModel trigger : triggers)
+		// {
+		// if (trigger.getCommand().equals(userCommand.getCommand()))
+		// {
+		// if (processTrigger(trigger))
+		// {
+		// return true;
+		// }
+		// }
+		// }
+
+		Optional<AbstractCommand> commandToRun = executors.stream().filter(e -> e.getCommands().contains(userCommand.getCommand())).findFirst();
+		if (commandToRun.isPresent())
+		{
+			return commandToRun.get().execute(userCommand, this);
+		}
+		else
+		{
+			print(ERROR_MESSAGE);
+			return false;
+		}
+		//
+		// for (AbstractCommand executor : executors)
+		// {
+		// if (executor.getCommands().contains(userCommand.getCommand()))
+		// {
+		// return executor.execute(userCommand, this);
+		// }
+		// }
 	}
 
 	protected boolean processTrigger(TriggerModel trigger)
@@ -203,18 +206,6 @@ public abstract class AbstractGame implements Game
 			return true;
 		}
 		return false;
-	}
-
-	private RoomModel getRoomByName(String name)
-	{
-		for (RoomModel r : rooms)
-		{
-			if (r.getName().equals(name))
-			{
-				return r;
-			}
-		}
-		return null;
 	}
 
 	private boolean executeActionIfExists(String actionString)
@@ -338,45 +329,48 @@ public abstract class AbstractGame implements Game
 		return null;
 	}
 
-	private CreatureModel getCreatureByName(String creatureName)
+	private <T> T getPOJOByPredicateListByName(List<T> list, Predicate<? super T> predicate, String creatureName)
 	{
-		for (CreatureModel creatureModel : creatures)
+		Optional<T> optPOJO = list.stream().filter(predicate).findFirst();
+
+		if (optPOJO.isPresent())
 		{
-			if (creatureModel.isExists() && creatureModel.getName().equals(creatureName))
-			{
-				return creatureModel;
-			}
+			return optPOJO.get();
 		}
-		return null;
+		else
+		{
+			return null;
+		}
+
+	}
+
+	private CreatureModel getCreatureByName(String name)
+	{
+		Predicate<CreatureModel> namePredicate = model -> model.getName().equals(name);
+		Predicate<CreatureModel> existsPredicate = model -> model.isExists();
+		return getPOJOByPredicateListByName(creatures, namePredicate.and(existsPredicate), name);
 	}
 
 	private ContainerModel getContainerByName(String name)
 	{
-		for (ContainerModel model : containers)
-		{
-			if (model.getName().equals(name))
-			{
-				return model;
-			}
-		}
-		return null;
+		Predicate<ContainerModel> namePredicate = model -> model.getName().equals(name);
+		return getPOJOByPredicateListByName(containers, namePredicate, name);
+	}
+
+	private RoomModel getRoomByName(String name)
+	{
+		Predicate<RoomModel> namePredicate = model -> model.getName().equals(name);
+		return getPOJOByPredicateListByName(rooms, namePredicate, name);
 	}
 
 	public boolean exitGame()
 	{
 		try
 		{
-			// replThread.checkAccess();
-			// replThread.interrupt();
-			// if (replThread.isInterrupted())
-			// {
-				print(BYE_WORD);
-				System.exit(SUCCESS_EXIT_STATUS);
-			// }
-			// else
-			// {
-				System.exit(ERROR_EXIT_STATUS);
-			// }
+			print(BYE_WORD);
+			System.exit(SUCCESS_EXIT_STATUS);
+			// System.exit(ERROR_EXIT_STATUS);
+
 		}
 		catch (SecurityException e)
 		{
@@ -602,17 +596,17 @@ public abstract class AbstractGame implements Game
 
 	private void print(Collection<String> messages)
 	{
-		replThread.consolePrint(messages.toArray(new String[] {}));
+		textIOApp.consolePrint(messages.toArray(new String[] {}));
 	}
 
 	protected void print(String... messages)
 	{
-		replThread.consolePrint(messages);
+		textIOApp.consolePrint(messages);
 	}
 
 	@Override
 	public void setREPLThread(TextIOApp replThread)
 	{
-		this.replThread = replThread;
+		this.textIOApp = replThread;
 	}
 }
