@@ -1,10 +1,11 @@
-package org.jaxclipse.base;
+package org.jaxclipse.jaxcraft.core.game;
 
-import org.jaxclipse.TextIOApp;
+import org.jaxclipse.core.JaxcraftConsole;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.command.AbstractCommand;
 import org.jaxclipse.core.model.DirectionType;
 import org.jaxclipse.core.model.GameInitModel;
+import org.jaxclipse.jaxcraft.textio.JaxcraftTextIOApp;
 
 import java.util.List;
 
@@ -112,5 +113,5 @@ public interface Game {
 
 	boolean exitGame();
 
-	void setREPLThread(TextIOApp replThread);
+	void setConsole(JaxcraftConsole jaxcraftConsole);
 }

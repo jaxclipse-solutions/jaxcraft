@@ -1,7 +1,5 @@
-package org.jaxclipse;
+package org.jaxclipse.jaxcraft.core.game;
 
-import org.jaxclipse.base.AbstractGame;
-import org.jaxclipse.base.Game;
 import org.jaxclipse.core.CommandProvider;
 import org.jaxclipse.core.InventoryContainer;
 import org.jaxclipse.core.model.GameInitModel;

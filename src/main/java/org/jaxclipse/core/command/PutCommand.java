@@ -3,8 +3,8 @@ package org.jaxclipse.core.command;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jaxclipse.base.Game;
 import org.jaxclipse.core.UserCommand;
+import org.jaxclipse.jaxcraft.core.game.Game;
 
 /**
  * Command changes item ownership from inventory to declared container if

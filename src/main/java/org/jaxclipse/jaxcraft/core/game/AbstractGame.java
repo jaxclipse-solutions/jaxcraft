@@ -1,10 +1,11 @@
-package org.jaxclipse.base;
+package org.jaxclipse.jaxcraft.core.game;
 
-import org.jaxclipse.TextIOApp;
 import org.jaxclipse.core.ActionParserHelper;
 import org.jaxclipse.core.CommandProvider;
 import org.jaxclipse.core.InventoryContainer;
+import org.jaxclipse.core.JaxcraftConsole;
 import org.jaxclipse.core.UserCommand;
+import org.jaxclipse.core.UserCommandParser;
 import org.jaxclipse.core.command.AbstractCommand;
 import org.jaxclipse.core.model.ActionModel;
 import org.jaxclipse.core.model.ActionType;
@@ -23,7 +24,6 @@ import org.jaxclipse.core.model.core.HasStatus;
 import org.jaxclipse.core.model.core.ItemContainer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +47,7 @@ public abstract class AbstractGame implements Game
 
 	private final InventoryContainer inventory;
 
-	private TextIOApp textIOApp;
+	private JaxcraftConsole jaxcraftConsole;
 	private final CommandProvider commandProvider;
 
 	public AbstractGame(CommandProvider commandProvider, InventoryContainer inventory)
@@ -76,12 +76,39 @@ public abstract class AbstractGame implements Game
 		itemContainers.putAll(gameInitModel.getItemContainers());
 	}
 
+	// TODO soon to be the main event loop for now
 	public void play()
 	{
 		printCurrentRoom();
-		textIOApp.setShowPrompt(true);
+		jaxcraftConsole.setShowPrompt(true);
+		while (true) // ummm ?
+		{
+			String line = jaxcraftConsole.getLineInput();
+			if (!handleInput(line))
+			{
+				jaxcraftConsole.consolePrint(Game.ERROR_MESSAGE);
+			}
+		}
 	}
 
+	protected boolean handleInput(String line)
+	{
+		boolean handled = false;
+		UserCommand command = UserCommandParser.resolve(line);
+		if (command != null)
+		{
+			for (AbstractCommand executor : getCommandExecutors())
+			{
+				if (executor.getCommands().contains(command.getCommand()))
+				{
+					jaxcraftConsole.consolePrint();
+					handled = processCommand(command);
+					break;
+				}
+			}
+		}
+		return handled;
+	}
 	private void initTriggers(GameInitModel model)
 	{
 		for (CreatureModel creatureModel : model.getCreatures())
@@ -596,17 +623,17 @@ public abstract class AbstractGame implements Game
 
 	private void print(Collection<String> messages)
 	{
-		textIOApp.consolePrint(messages.toArray(new String[] {}));
+		jaxcraftConsole.consolePrint(messages.toArray(new String[] {}));
 	}
 
 	protected void print(String... messages)
 	{
-		textIOApp.consolePrint(messages);
+		jaxcraftConsole.consolePrint(messages);
 	}
 
 	@Override
-	public void setREPLThread(TextIOApp replThread)
+	public void setConsole(JaxcraftConsole jaxcraftConsole)
 	{
-		this.textIOApp = replThread;
+		this.jaxcraftConsole = jaxcraftConsole;
 	}
 }

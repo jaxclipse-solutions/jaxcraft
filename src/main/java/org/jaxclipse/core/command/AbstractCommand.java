@@ -2,8 +2,8 @@ package org.jaxclipse.core.command;
 
 import java.util.List;
 
-import org.jaxclipse.base.Game;
 import org.jaxclipse.core.UserCommand;
+import org.jaxclipse.jaxcraft.core.game.Game;
 
 /**
  * This abstract class is the superclass of all classes representing an commands.

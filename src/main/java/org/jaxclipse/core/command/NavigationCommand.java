@@ -3,9 +3,9 @@ package org.jaxclipse.core.command;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jaxclipse.base.Game;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.model.DirectionType;
+import org.jaxclipse.jaxcraft.core.game.Game;
 
 /**
  * n, s, e, w - movement commands to put the player in a different room.

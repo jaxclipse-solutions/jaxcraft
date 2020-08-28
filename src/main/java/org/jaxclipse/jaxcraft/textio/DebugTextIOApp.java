@@ -1,4 +1,4 @@
-package org.jaxclipse;
+package org.jaxclipse.jaxcraft.textio;
 
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
