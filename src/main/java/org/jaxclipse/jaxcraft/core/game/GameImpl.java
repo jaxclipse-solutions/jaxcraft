@@ -2,6 +2,7 @@ package org.jaxclipse.jaxcraft.core.game;
 
 import org.jaxclipse.core.CommandProvider;
 import org.jaxclipse.core.InventoryContainer;
+import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.model.GameInitModel;
 
 public class GameImpl extends AbstractGame implements Game

@@ -97,38 +97,32 @@ public abstract class AbstractGame implements Game
 		UserCommand command = UserCommandParser.resolve(line);
 		if (command != null)
 		{
-			for (AbstractCommand executor : getCommandExecutors())
+			Optional<AbstractCommand> executor = getCommandExecutors().stream().filter(e -> e.getCommands().contains(command.getCommand()))
+					.findFirst();
+			if (executor.isPresent())
 			{
-				if (executor.getCommands().contains(command.getCommand()))
-				{
-					jaxcraftConsole.consolePrint();
-					handled = processCommand(command);
-					break;
-				}
+				AbstractCommand jaxcraftCommand = executor.get();
+				jaxcraftConsole.consolePrint();
+				handled = processCommand(command, jaxcraftCommand);
 			}
+
 		}
 		return handled;
 	}
+
 	private void initTriggers(GameInitModel model)
 	{
-		for (CreatureModel creatureModel : model.getCreatures())
-		{
-			triggers.add(creatureModel.getTrigger());
-		}
+		model.getCreatures().stream().forEach(m -> triggers.add(m.getTrigger()));
 
-		for (RoomModel room : model.getRooms())
-		{
-			for (TriggerModel trigger : room.getTriggers())
+		model.getRooms().stream().flatMap(room -> room.getTriggers().stream()).forEach(tm -> {
+			if (!triggers.contains(tm))
 			{
-				if (trigger != null && !triggers.contains(trigger))
-				{
-					triggers.add(trigger);
-				}
+				triggers.add(tm);
 			}
-		}
+		});
 	}
 
-	public boolean processCommand(UserCommand userCommand)
+	public boolean processCommand(UserCommand userCommand, AbstractCommand jaxcraftCommand)
 	{
 		Optional<TriggerModel> trigger = currentRoom.getTriggers().stream().filter(e -> e.getCommand().equals(userCommand.getCommand())).findFirst();
 		if (trigger.isPresent())
@@ -143,36 +137,7 @@ public abstract class AbstractGame implements Game
 			Log.debug("No triggers processed");
 		}
 
-		// List<TriggerModel> triggers = currentRoom.getTriggers();
-		// for (TriggerModel trigger : triggers)
-		// {
-		// if (trigger.getCommand().equals(userCommand.getCommand()))
-		// {
-		// if (processTrigger(trigger))
-		// {
-		// return true;
-		// }
-		// }
-		// }
-
-		Optional<AbstractCommand> commandToRun = executors.stream().filter(e -> e.getCommands().contains(userCommand.getCommand())).findFirst();
-		if (commandToRun.isPresent())
-		{
-			return commandToRun.get().execute(userCommand, this);
-		}
-		else
-		{
-			print(ERROR_MESSAGE);
-			return false;
-		}
-		//
-		// for (AbstractCommand executor : executors)
-		// {
-		// if (executor.getCommands().contains(userCommand.getCommand()))
-		// {
-		// return executor.execute(userCommand, this);
-		// }
-		// }
+		return jaxcraftCommand.execute(userCommand, this);
 	}
 
 	protected boolean processTrigger(TriggerModel trigger)
