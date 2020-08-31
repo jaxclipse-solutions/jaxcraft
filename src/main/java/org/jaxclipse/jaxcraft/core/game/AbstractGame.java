@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import jline.internal.Log;
+// import jline.internal.Log;
 
 public abstract class AbstractGame implements Game
 {
@@ -134,7 +134,8 @@ public abstract class AbstractGame implements Game
 		}
 		else
 		{
-			Log.debug("No triggers processed");
+			// Log.debug("No triggers processed");
+			System.out.println("No triggers processed");
 		}
 
 		return jaxcraftCommand.execute(userCommand, this);
