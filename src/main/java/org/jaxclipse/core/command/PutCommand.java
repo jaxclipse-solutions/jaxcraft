@@ -13,7 +13,7 @@ import org.jaxclipse.jaxcraft.core.game.Game;
  * @author dbimko
  * 
  */
-public final class PutCommand extends AbstractCommand {
+public final class PutCommand extends JaxcraftCommand {
 
 	private static final int CONTAINER_INDEX = 1;
 	private static final int ITEM_INDEX = 0;

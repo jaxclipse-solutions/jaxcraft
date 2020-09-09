@@ -13,7 +13,7 @@ import org.jaxclipse.jaxcraft.core.game.Game;
  * @author dbimko
  * 
  */
-public final class NavigationCommand extends AbstractCommand {
+public final class NavigationCommand extends JaxcraftCommand {
 
 	private static final List<String> commands = Arrays.asList(new String[] {
 			"n", "s", "e", "w" });

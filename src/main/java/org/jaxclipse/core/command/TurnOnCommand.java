@@ -13,7 +13,7 @@ import org.jaxclipse.jaxcraft.core.game.Game;
  * @author dbimko
  * 
  */
-public final class TurnOnCommand extends AbstractCommand {
+public final class TurnOnCommand extends JaxcraftCommand {
 
 	public static final int ITEM_INDEX = 0;
 	

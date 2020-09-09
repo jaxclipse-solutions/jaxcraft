@@ -3,7 +3,7 @@ package org.jaxclipse.core;
 import com.google.common.collect.Lists;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.jaxclipse.core.command.AbstractCommand;
+import org.jaxclipse.core.command.JaxcraftCommand;
 import org.jaxclipse.core.command.AttackCommand;
 import org.jaxclipse.core.command.ExitCommand;
 import org.jaxclipse.core.command.InventoryCommand;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class CommandProvider
 {
 
-	Map<Class<? extends AbstractCommand>, AbstractCommand> commandMap;
+	Map<Class<? extends JaxcraftCommand>, JaxcraftCommand> commandMap;
 
 	public CommandProvider()
 	{
@@ -46,14 +46,14 @@ public class CommandProvider
 
 	}
 
-	public List<AbstractCommand> getAllCommands()
+	public List<JaxcraftCommand> getAllCommands()
 	{
 
 		return commandMap.values().stream().collect(Collectors.toList());
 
 	}
 
-	public AbstractCommand get(Class<? extends AbstractCommand> cls)
+	public JaxcraftCommand get(Class<? extends JaxcraftCommand> cls)
 	{
 		return commandMap.get(cls);
 	}

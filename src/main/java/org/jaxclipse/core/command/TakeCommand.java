@@ -12,7 +12,7 @@ import org.jaxclipse.jaxcraft.core.game.Game;
  * @author dbimko
  * 
  */
-public final class TakeCommand extends AbstractCommand {
+public final class TakeCommand extends JaxcraftCommand {
 
 	public static final int ITEM_INDEX = 0;
 

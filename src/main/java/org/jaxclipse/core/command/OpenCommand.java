@@ -14,7 +14,7 @@ import org.jaxclipse.jaxcraft.core.game.Game;
  * @author dbimko
  * 
  */
-public final class OpenCommand extends AbstractCommand {
+public final class OpenCommand extends JaxcraftCommand {
 
 	public static final int ITEM_INDEX = 0;
 

@@ -14,7 +14,7 @@ import org.jaxclipse.jaxcraft.core.game.Game;
  * @author dbimko
  * 
  */
-public class AttackCommand extends AbstractCommand {
+public class AttackCommand extends JaxcraftCommand {
 
 	private static final int CREATURE_INDEX = 0;
 	private static final int ITEM_INDEX = 2;

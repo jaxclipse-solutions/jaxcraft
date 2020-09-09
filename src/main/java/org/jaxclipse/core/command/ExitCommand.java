@@ -6,7 +6,7 @@ import java.util.List;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.jaxcraft.core.game.Game;
 
-public class ExitCommand extends AbstractCommand {
+public class ExitCommand extends JaxcraftCommand {
 
 	private static final List<String> commands = Arrays.asList(new String[] {
 			"quit", "exit" });
