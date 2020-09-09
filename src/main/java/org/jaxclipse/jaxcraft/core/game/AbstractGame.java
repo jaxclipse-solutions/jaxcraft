@@ -6,7 +6,7 @@ import org.jaxclipse.core.InventoryContainer;
 import org.jaxclipse.core.JaxcraftConsole;
 import org.jaxclipse.core.UserCommand;
 import org.jaxclipse.core.UserCommandParser;
-import org.jaxclipse.core.command.AbstractCommand;
+import org.jaxclipse.core.command.JaxcraftCommand;
 import org.jaxclipse.core.model.ActionModel;
 import org.jaxclipse.core.model.ActionType;
 import org.jaxclipse.core.model.AttackModel;
@@ -16,6 +16,7 @@ import org.jaxclipse.core.model.CreatureModel;
 import org.jaxclipse.core.model.DirectionType;
 import org.jaxclipse.core.model.GameInitModel;
 import org.jaxclipse.core.model.ItemModel;
+import org.jaxclipse.core.model.JaxcraftContext;
 import org.jaxclipse.core.model.RoomModel;
 import org.jaxclipse.core.model.TriggerModel;
 import org.jaxclipse.core.model.TriggerType;
@@ -41,27 +42,28 @@ public abstract class AbstractGame implements Game
 	private List<ContainerModel> containers;
 	private List<CreatureModel> creatures;
 	private final List<TriggerModel> triggers;
-	private List<AbstractCommand> executors;
+	private List<JaxcraftCommand> executors;
 	private RoomModel currentRoom;
 	private final Map<String, ItemContainer> itemContainers;
 
-	private final InventoryContainer inventory;
+	private InventoryContainer inventory;
 
 	private JaxcraftConsole jaxcraftConsole;
-	private final CommandProvider commandProvider;
+	private CommandProvider commandProvider;
 
-	public AbstractGame(CommandProvider commandProvider, InventoryContainer inventory)
+	public AbstractGame()
 	{
 		rooms = new ArrayList<>();
 		triggers = new ArrayList<>();
 		itemContainers = new HashMap<>();
-		this.inventory = inventory;
-		this.commandProvider = commandProvider;
-
 	}
 
-	public void init(GameInitModel gameInitModel)
+	public void init(JaxcraftContext context)
 	{
+		this.commandProvider = context.getCommandProvider();
+		this.inventory = context.getInventoryContainer();
+		GameInitModel gameInitModel = context.getGameModel();
+
 		executors = commandProvider.getAllCommands();
 
 		rooms = gameInitModel.getRooms();
@@ -76,7 +78,6 @@ public abstract class AbstractGame implements Game
 		itemContainers.putAll(gameInitModel.getItemContainers());
 	}
 
-	// TODO soon to be the main event loop for now
 	public void play()
 	{
 		printCurrentRoom();
@@ -97,11 +98,11 @@ public abstract class AbstractGame implements Game
 		UserCommand command = UserCommandParser.resolve(line);
 		if (command != null)
 		{
-			Optional<AbstractCommand> executor = getCommandExecutors().stream().filter(e -> e.getCommands().contains(command.getCommand()))
+			Optional<JaxcraftCommand> executor = getCommandExecutors().stream().filter(e -> e.getCommands().contains(command.getCommand()))
 					.findFirst();
 			if (executor.isPresent())
 			{
-				AbstractCommand jaxcraftCommand = executor.get();
+				JaxcraftCommand jaxcraftCommand = executor.get();
 				jaxcraftConsole.consolePrint();
 				handled = processCommand(command, jaxcraftCommand);
 			}
@@ -122,7 +123,7 @@ public abstract class AbstractGame implements Game
 		});
 	}
 
-	public boolean processCommand(UserCommand userCommand, AbstractCommand jaxcraftCommand)
+	public boolean processCommand(UserCommand userCommand, JaxcraftCommand jaxcraftCommand)
 	{
 		Optional<TriggerModel> trigger = currentRoom.getTriggers().stream().filter(e -> e.getCommand().equals(userCommand.getCommand())).findFirst();
 		if (trigger.isPresent())
@@ -305,7 +306,7 @@ public abstract class AbstractGame implements Game
 	{
 		for (ItemModel item : items)
 		{
-			if (item.keywordMatch(itemName))
+			if (item.getName().equalsIgnoreCase(itemName))
 			{
 				return item;
 			}
@@ -560,7 +561,7 @@ public abstract class AbstractGame implements Game
 
 	public abstract String getGameFile();
 
-	public List<AbstractCommand> getCommandExecutors()
+	public List<JaxcraftCommand> getCommandExecutors()
 	{
 		return executors;
 	}

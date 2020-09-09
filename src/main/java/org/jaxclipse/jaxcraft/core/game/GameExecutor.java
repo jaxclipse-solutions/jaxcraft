@@ -6,6 +6,7 @@ import org.jaxclipse.core.InventoryContainer;
 import org.jaxclipse.core.InventoryContainerImpl;
 import org.jaxclipse.core.JaxcraftConsole;
 import org.jaxclipse.core.model.GameInitModel;
+import org.jaxclipse.core.model.JaxcraftContext;
 
 public class GameExecutor
 {
@@ -24,12 +25,14 @@ public class GameExecutor
 			GameFileParserImpl gameFileParserImpl = new GameFileParserImpl();
 			InventoryContainer inventoryContainer = new InventoryContainerImpl();
 			CommandProvider commandProvider = new CommandProvider();
-			Game game = new GameImpl(commandProvider, inventoryContainer);
+			Game game = new GameImpl();
 			game.setConsole(jaxcraftConsole);
 			this.game = game;
 
 			GameInitModel gameModel = gameFileParserImpl.parse(game.getGameFile());
-			game.init(gameModel);
+			JaxcraftContext context = new JaxcraftContext(gameModel, commandProvider, inventoryContainer);
+
+			game.init(context);
 		}
 		catch (Exception e)
 		{

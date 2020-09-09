@@ -12,7 +12,7 @@ import org.jaxclipse.jaxcraft.core.game.Game;
  * @author dbimko
  * 
  */
-public final class InventoryCommand extends AbstractCommand {
+public final class InventoryCommand extends JaxcraftCommand {
 
 	private static final List<String> commands = Arrays
 			.asList(new String[] { "i" });

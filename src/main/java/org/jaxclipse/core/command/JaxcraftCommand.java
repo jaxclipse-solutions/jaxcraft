@@ -20,7 +20,7 @@ import org.jaxclipse.jaxcraft.core.game.Game;
  * @see TurnOnCommand
  * 
  */
-public abstract class AbstractCommand
+public abstract class JaxcraftCommand
 {
 
 	/**

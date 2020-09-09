@@ -2,9 +2,9 @@ package org.jaxclipse.jaxcraft.core.game;
 
 import org.jaxclipse.core.JaxcraftConsole;
 import org.jaxclipse.core.UserCommand;
-import org.jaxclipse.core.command.AbstractCommand;
+import org.jaxclipse.core.command.JaxcraftCommand;
 import org.jaxclipse.core.model.DirectionType;
-import org.jaxclipse.core.model.GameInitModel;
+import org.jaxclipse.core.model.JaxcraftContext;
 
 import java.util.List;
 
@@ -35,13 +35,13 @@ public interface Game
 
 	boolean exitGame();
 
-	List<AbstractCommand> getCommandExecutors();
+	List<JaxcraftCommand> getCommandExecutors();
 
 	String getGameFile();
 
 	void goInDirection(DirectionType direction);
 
-	void init(GameInitModel gameInitModel);
+	void init(JaxcraftContext context);
 
 	boolean openContainer(String containerName);
 
@@ -49,7 +49,7 @@ public interface Game
 
 	void printInventory();
 
-	boolean processCommand(UserCommand userCommand, AbstractCommand jaxcraftCommand);
+	boolean processCommand(UserCommand userCommand, JaxcraftCommand jaxcraftCommand);
 
 	boolean putItemToContainer(String itemName, String containerName);
 
