@@ -95,6 +95,10 @@
       <direction>west</direction>
       <name>MasterBedroom</name>
     </border>
+	<border>
+	  <direction>south</direction>
+	  <name>BackPorch</name>
+	</border>
   </room>
   <room>
     <name>MasterBedroom</name>
@@ -159,5 +163,13 @@
       <direction>west</direction>
       <name>Hallway</name>
     </border>
+  </room>
+  <room>
+   <name>BackPorch</name>
+   <description>The back porch has two chairs and a spigot, with a sliding glass door</description>
+   <border>
+     <direction>north</direction>
+	 <name>LivingRoom</name>
+   </border>
   </room>
 </map>
