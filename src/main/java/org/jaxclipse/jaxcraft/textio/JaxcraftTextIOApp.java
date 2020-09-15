@@ -4,8 +4,8 @@ import org.beryx.textio.TerminalProperties;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
 import org.beryx.textio.web.RunnerData;
-import org.jaxclipse.core.JaxcraftConsole;
-import org.jaxclipse.jaxcraft.core.game.GameExecutor;
+import org.jaxclipse.jaxcraft.game.GameExecutor;
+import org.jaxclipse.jaxcraft.game.JaxcraftConsole;
 
 import java.util.Collection;
 import java.util.function.BiConsumer;

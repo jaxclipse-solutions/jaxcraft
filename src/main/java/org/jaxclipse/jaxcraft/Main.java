@@ -19,7 +19,15 @@ public class Main
 	{
 
 		BiConsumer<TextIO, RunnerData> app = new JaxcraftTextIOApp();
-		String propsFileName = app.getClass().getSimpleName() + ".properties";
+
+
+		WebTextTerminal webTextTerm = new WebTextTerminal();
+		webTextTerm.init();
+		TextIoApp<?> textIoApp = new RatpackTextIoApp(app, webTextTerm);
+		WebTextIoExecutor webTextIoExecutor = (new WebTextIoExecutor()).withPort(5000);
+		webTextIoExecutor.execute(textIoApp);
+
+	/*	String propsFileName = app.getClass().getSimpleName() + ".properties";
 		System.setProperty(Main.SYSPROP_PROPERTIES_FILE_LOCATION, propsFileName);
 
 		TextIO textIO = TextIOUtils.chooseTextIO();
@@ -31,12 +39,12 @@ public class Main
 		{
 			WebTextTerminal webTextTerm = (WebTextTerminal) textIO.getTextTerminal();
 			TextIoApp<?> textIoApp = new RatpackTextIoApp(app, webTextTerm);
-			WebTextIoExecutor webTextIoExecutor = (new WebTextIoExecutor()).withPort(8080);
+			WebTextIoExecutor webTextIoExecutor = (new WebTextIoExecutor()).withPort(5000);
 			webTextIoExecutor.execute(textIoApp);
 		}
 		else
 		{
 			app.accept(textIO, null);
-		}
+		}*/
 	}
 }
