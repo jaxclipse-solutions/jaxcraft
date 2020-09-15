@@ -1,7 +1,5 @@
 package org.jaxclipse.jaxcraft.model;
 
-import org.jaxclipse.core.model.core.HasStatus;
-
 import lombok.Data;
 
 @Data

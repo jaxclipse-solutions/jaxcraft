@@ -10,7 +10,6 @@ public class ConditionModel
 	private String object;
 
 	private String owner;
-
 	private String status;
 
 }

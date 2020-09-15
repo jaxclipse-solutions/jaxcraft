@@ -1,0 +1,188 @@
+{
+	"rooms": [
+		{
+			"name": "Entrance",
+			"description": "You find yourself at the mouth of a cave and decide that in spite of common sense and any sense of self preservation that you're going to go exploring north into it.  It's a little dark, but luckily there are some torches on the wall.",
+			"status": null,
+			"borders": [
+				{
+					"name": "MainCavern",
+					"direction": {
+						"name": "north",
+						"shortName": "n"
+					}
+				}
+			],
+			"items": [
+				"torch"
+			],
+			"triggers": [
+				{
+					"type": "PERMANENT",
+					"messages": [
+						"*stumble* need some light..."
+					],
+					"condition": {
+						"has": false,
+						"object": "torch",
+						"owner": "inventory",
+						"status": null
+					},
+					"command": "n",
+					"action": null
+				}
+			],
+			"containers": [],
+			"type": "NONE"
+		},
+		{
+			"name": "MainCavern",
+			"description": "A huge cavern surrounds you with a locked door to the north, a chest in the center, and a very dark corner...",
+			"status": null,
+			"borders": [
+				{
+					"name": "Entrance",
+					"direction": {
+						"name": "south",
+						"shortName": "s"
+					}
+				},
+				{
+					"name": "Staircase",
+					"direction": {
+						"name": "north",
+						"shortName": "n"
+					}
+				}
+			],
+			"items": [],
+			"triggers": [
+				{
+					"type": "PERMANENT",
+					"messages": [
+						"lock needs a key... not to mention you don't want to get too close to that side of the room... there's something in that corner..."
+					],
+					"condition": {
+						"has": false,
+						"object": "lock",
+						"owner": null,
+						"status": "locked"
+					},
+					"command": "n",
+					"action": null
+				}
+			],
+			"containers": [
+				"chest",
+				"lock"
+			],
+			"type": "NONE"
+		},
+		{
+			"name": "Staircase",
+			"description": "You found the exit!",
+			"status": null,
+			"borders": [
+				{
+					"name": "MainCavern",
+					"direction": {
+						"name": "south",
+						"shortName": "s"
+					}
+				}
+			],
+			"items": [],
+			"triggers": [],
+			"containers": [],
+			"type": "EXIT"
+		}
+	],
+	"items": [
+		{
+			"name": "torch",
+			"message": "next to a small button it reads \"push for big flame\"",
+			"status": "lit",
+			"turnOnModel": {
+				"message": "the torch has erupted into a menacing inferno",
+				"action": "update torch to inferno"
+			}
+		},
+		{
+			"name": "explosive",
+			"message": "turn on for boom :-). Warning!  Keep away from gnomes!",
+			"status": "idle",
+			"turnOnModel": {
+				"message": "you hear ticking...",
+				"action": "Update explosive to ticking"
+			}
+		},
+		{
+			"name": "key",
+			"message": "Exit",
+			"status": null,
+			"turnOnModel": null
+		}
+	],
+	"objects": [
+		{
+			"name": "lock",
+			"status": "locked",
+			"accept": "key",
+			"items": [],
+			"trigger": {
+				"type": null,
+				"messages": [
+					"The lock drops off and the door opens"
+				],
+				"condition": {
+					"has": true,
+					"object": "key",
+					"owner": "lock",
+					"status": null
+				},
+				"command": null,
+				"action": "Update lock to unlocked"
+			}
+		},
+		{
+			"name": "chest",
+			"items": [
+				"explosive"
+			]
+		}
+	],
+	"creatures": [{
+	"name": "gnome",
+	"vulnerability": "explosive",
+	"trigger": {
+		"type": "SINGLE",
+		"messages": [
+			"You see a gnome in the dark corner... watching you with its super pointy hat..."
+		],
+		"condition": {
+			"has": false,
+			"object": "torch",
+			"owner": null,
+			"status": "inferno"
+		},
+		"command": null,
+		"action": null
+	},
+	"attack": {
+		"condition": {
+			"has": false,
+			"object": "explosive",
+			"owner": null,
+			"status": "ticking"
+		},
+		"actions": [
+			"Add key to MainCavern",
+			"Delete gnome"
+		],
+		"message": [
+			"But instead of exploding it plays a song and the gnome gets up and dances a jig before disappearing.  Funny, but you find he was sitting on a key!"
+		]
+	},
+	"exists": true
+}]
+}

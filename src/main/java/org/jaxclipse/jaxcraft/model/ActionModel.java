@@ -12,4 +12,8 @@ public class ActionModel
 	private String owner;
 	private ActionType actionType;
 
+	public ActionModel(ActionType actionType)
+	{
+		this.actionType = actionType;
+	}
 }
