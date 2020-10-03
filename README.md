@@ -11,6 +11,8 @@ $cd jaxcract
 
 $mvn clean package exec:java
 
+http://localhost:8080
+
 ====================================================================
 
 developer setup - this project uses java jdk8 with maven for dependency management.
