@@ -11,7 +11,7 @@ $cd jaxcract
 
 $mvn clean package exec:java
 
-http://localhost:8080
+http://localhost:5000
 
 ====================================================================
 
